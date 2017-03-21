@@ -27,7 +27,8 @@ public class StartupActivity extends Activity {
     }
 
     private void connectToFirebase(){
-
+        // Initialize with google library
+        // prepare for firebase connection
     }
 
 }
