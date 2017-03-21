@@ -75,4 +75,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         fragmentTransaction.commit();
     }
 
+    private void showDialogMessage(String title, String message) {
+        // Just test with Git
+    }
+
 }
