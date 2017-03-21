@@ -26,4 +26,8 @@ public class StartupActivity extends Activity {
         startActivity(intent);
     }
 
+    private void connectToFirebase(){
+
+    }
+
 }
