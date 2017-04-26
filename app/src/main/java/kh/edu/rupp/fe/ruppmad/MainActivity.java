@@ -1,19 +1,29 @@
 package kh.edu.rupp.fe.ruppmad;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * RUPPMAD
  * Created by leapkh on 1/3/17.
  */
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+
+    private DrawerLayout drawerLayout;
 
     private DocumentsFragment documentsFragment;
     private boolean isFragmentShowing;
@@ -23,22 +33,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        findViewById(R.id.img_logout).setOnClickListener(this);
-        findViewById(R.id.lyt_documents).setOnClickListener(this);
 
-        addFragments();
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+        // Toobar
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
+
+        // Navigation View
+        NavigationView navigationView = (NavigationView)findViewById(R.id.navigationview);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Navigation View Header
+        View navigationHeaderView = navigationView.getHeaderView(0);
+        TextView txtEdit = (TextView)navigationHeaderView.findViewById(R.id.txt_edit);
+        txtEdit.setOnClickListener(this);
+
+        // Actionbar Drawer
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        onDocumentsClick();
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.img_logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
-            case R.id.lyt_documents:
-                onDocumentsClick();
-                break;
+        if(view.getId() == R.id.txt_edit){
+            Log.d("rupp", "On edit click");
         }
     }
 
@@ -51,32 +74,53 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mnu_action, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("rupp", "onContextItemSelected");
+        return true;
+    }
+
+
     private void showFragment(Fragment fragment) {
-        if (fragment == null) {
-            isFragmentShowing = false;
-            findViewById(R.id.lyt_menus).setVisibility(View.VISIBLE);
-            findViewById(R.id.lyt_fragments).setVisibility(View.GONE);
-        } else {
-            isFragmentShowing = true;
-            findViewById(R.id.lyt_menus).setVisibility(View.GONE);
-            findViewById(R.id.lyt_fragments).setVisibility(View.VISIBLE);
-        }
+
     }
 
     private void onDocumentsClick() {
-        showFragment(documentsFragment);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.lyt_content, new DocumentsFragment());
+        fragmentTransaction.commit();
     }
 
     private void addFragments() {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        documentsFragment = new DocumentsFragment();
-        fragmentTransaction.add(R.id.lyt_fragments, documentsFragment);
-        fragmentTransaction.commit();
+
     }
 
     private void showDialogMessage(String title, String message) {
         // Just test with Git
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.d("rupp", "Menu click");
+        switch (item.getItemId()) {
+            case R.id.mnu_documents:
+                onDocumentsClick();
+                break;
+            case R.id.mnu_settings:
+                FragmentManager fragmentManager2 = getFragmentManager();
+                FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
+                fragmentTransaction2.replace(R.id.lyt_content, new SettingsFragment());
+                fragmentTransaction2.commit();
+                break;
+        }
+        drawerLayout.closeDrawers();
+        return true;
+    }
 }
