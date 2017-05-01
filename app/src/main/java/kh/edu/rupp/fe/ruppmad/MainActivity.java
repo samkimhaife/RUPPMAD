@@ -3,6 +3,8 @@ package kh.edu.rupp.fe.ruppmad;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -34,34 +36,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // Toobar
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.app_name);
 
         // Navigation View
-        NavigationView navigationView = (NavigationView)findViewById(R.id.navigationview);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigationview);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Navigation View Header
         View navigationHeaderView = navigationView.getHeaderView(0);
-        TextView txtEdit = (TextView)navigationHeaderView.findViewById(R.id.txt_edit);
-        txtEdit.setOnClickListener(this);
+        navigationHeaderView.findViewById(R.id.txt_edit).setOnClickListener(this);
+        navigationHeaderView.findViewById(R.id.txt_logout).setOnClickListener(this);
 
         // Actionbar Drawer
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
+        // Apply username
+        String username = getIntent().getStringExtra("username");
+        TextView txtUsername = (TextView) navigationHeaderView.findViewById(R.id.txt_username);
+        txtUsername.setText(username);
+
         onDocumentsClick();
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.txt_edit){
-            Log.d("rupp", "On edit click");
+        switch (view.getId()) {
+            case R.id.txt_logout:
+                doLogout();
+                break;
         }
     }
 
@@ -86,6 +95,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    private void doLogout() {
+        // Clear username preference
+        SharedPreferences preference = getSharedPreferences(LoginActivity.PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+        editor.putString(LoginActivity.KEY_USERNAME, null);
+        editor.commit();
+
+        // Show login form
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     private void showFragment(Fragment fragment) {
 

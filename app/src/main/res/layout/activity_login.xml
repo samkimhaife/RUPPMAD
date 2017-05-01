@@ -26,16 +26,19 @@
         android:id="@+id/etxt_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username" />
+        android:hint="Username"
+        android:text="rupp-fe" />
 
     <EditText
         android:id="@+id/etxt_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:text="123456" />
 
     <CheckBox
+        android:id="@+id/chk_remember_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Remember Me" />
