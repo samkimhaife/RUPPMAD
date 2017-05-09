@@ -119,6 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentTransaction.commit();
     }
 
+    private void onAssignmentClick() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.lyt_content, new AssignmentFragment());
+        fragmentTransaction.commit();
+    }
+
     private void addFragments() {
 
     }
@@ -134,6 +141,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mnu_documents:
                 onDocumentsClick();
                 break;
+
+            case R.id.mnu_assignment:
+                onAssignmentClick();
+                break;
+
             case R.id.mnu_settings:
                 FragmentManager fragmentManager2 = getFragmentManager();
                 FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
